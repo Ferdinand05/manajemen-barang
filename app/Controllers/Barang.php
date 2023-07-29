@@ -136,7 +136,7 @@ class Barang extends BaseController
 
             $pathGambar = '/upload/' . $gambar->getName();
         } else {
-            $pathGambar = '';
+            $pathGambar = '/upload/' . 'unknown.jpg';
         }
 
         $this->barang->insert([

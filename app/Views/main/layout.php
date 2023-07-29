@@ -140,7 +140,7 @@
         <!-- /.content-wrapper -->
 
         <footer class="main-footer text-center">
-            <p class="m-0">&copy;2023 AdminLTE. <br>Made by <a href="">Ferdinand</a></p>
+            <p class="m-0">&copy;2023 AdminLTE. <br>Made by <a href="https://github.com/Ferdinand05/manajemen-barang">Ferdinand</a></p>
         </footer>
 
         <!-- Control Sidebar -->
