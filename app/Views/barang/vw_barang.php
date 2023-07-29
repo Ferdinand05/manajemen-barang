@@ -33,7 +33,7 @@
             ?>
                 <tr>
                     <th scope="row"><?= $i; ?></th>
-                    <td><img src="<?= $row['gambar_brg']; ?>" alt="<?= $row['nama_brg']; ?>" width="55px" class="img-fluid"></td>
+                    <td style="width:80px;" class="p-2"><img src="/upload/<?= $row['gambar_brg']; ?>" alt="<?= $row['nama_brg']; ?>" width="100%" class="img-fluid"></td>
                     <td class="align-middle"><?= $row['kode_brg'] ?></td>
                     <td class="align-middle"><?= $row['nama_brg'] ?></td>
                     <td class="align-middle"><?= $row['kat_nama']; ?></td>
@@ -41,10 +41,10 @@
                     <td class="align-middle"><?= $row['stok_brg']; ?></td>
                     <td class="align-middle"><?= number_format($row['harga_brg'], 0, ',', '.'); ?></td>
                     <td class="text-center align-middle">
-                        <a href="" class="btn btn-primary" title="Edit Data">
+                        <a href="/barang/edit/<?= $row['kode_brg']; ?>" class="btn btn-primary" title="Edit Data">
                             <i class="fa fa-edit"></i>
                         </a>
-                        <a href="" class="btn btn-danger" title="Hapus Data">
+                        <a href="/barang/delete/<?= $row['kode_brg']; ?>" class="btn btn-danger" title="Hapus Data" onclick="return confirm('Apakah anda yakin ingin menghapus, <?= $row['nama_brg']; ?> ')">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </td>
