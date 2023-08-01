@@ -14,10 +14,18 @@ class ModelBarang extends Model
 
     public function tampilData()
     {
-        $builder = $this->builder('barang');
+        $builder = $this->table('barang');
         $builder->select('*');
-        $builder->join('kategori', 'barang.brg_katid = kategori.kat_id')->join('satuan', 'barang.brg_satid = satuan.sat_id');
-        $query = $builder->get()->getResultArray();
-        return $query;
+        $builder->join('kategori', 'brg_katid = kat_id');
+        $builder->join('satuan', 'brg_satid = sat_id');
+        return $builder;
+    }
+
+    public function cariData($k)
+    {
+        $builder = $this->table('barang');
+        $builder->join('kategori', 'brg_katid =kat_id');
+        $builder->join('satuan', 'brg_satid = sat_id')->like('kode_brg', $k)->orLike('nama_brg', $k)->orLike('harga_brg', $k)->orLike('stok_brg', $k)->orLike('kat_nama', $k);
+        return $builder;
     }
 }

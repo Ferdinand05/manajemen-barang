@@ -1,7 +1,7 @@
 #-------------------------
 # Operating Specific Junk Files
 #-------------------------
-
+upload
 # OS X
 .DS_Store
 .AppleDouble
@@ -14,7 +14,7 @@
 Thumbs.db
 ehthumbs.db
 Desktop.ini
-upload
+
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 

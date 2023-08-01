@@ -32,8 +32,15 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Main::index');
 $routes->get('/kategori/hapus/(:any)', 'Kategori::index');
 $routes->delete('/kategori/hapus/(:any)', 'Kategori::hapus/$1');
+
 $routes->get('satuan/hapus/(:any)', 'Satuan::index');
 $routes->delete('satuan/hapus/(:any)', 'Satuan::hapus/$1');
+
+$routes->get('barang/delete/(:any)', 'Barang::index');
+$routes->delete('barang/delete/(:any)', 'Barang::delete/$1');
+
+$routes->get('barang/edit/(:any)', 'Barang::index');
+$routes->put('barang/edit/(:any)', 'Barang::edit/$1');
 
 /*
  * --------------------------------------------------------------------

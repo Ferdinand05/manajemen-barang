@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\ModelBarang;
 use App\Models\ModelKategori;
 use App\Models\ModelSatuan;
+use Config\Pager;
 
 class Barang extends BaseController
 {
@@ -20,11 +21,22 @@ class Barang extends BaseController
 
     public function index()
     {
+        $keyword = $this->request->getVar('keyword');
+        $modelBarang = $keyword ? $this->barang->cariData($keyword) : $this->barang->tampilData();
+
+        // $totaldata = $keyword ? $this->barang->cariData($keyword)->countAllResults() : $this->barang->tampilData()->countAllResults();
+
+        $nohalaman = $this->request->getVar('page_barang');
+        ($nohalaman) ? $nohalaman : $nohalaman = 1;
         $data = [
             'title' => 'Manajemen Data Barang',
             'subtitle' => 'Barang',
             'content' => '',
-            'barang' => $this->barang->tampilData(),
+            'barang' => $modelBarang->paginate(5, 'barang'),
+            'pager' => $this->barang->pager,
+            'nohalaman' => $nohalaman,
+            // 'totaldata' => $totaldata,
+
         ];
 
         return view('barang/vw_barang', $data);
@@ -297,8 +309,8 @@ class Barang extends BaseController
         ]);
 
         $pesan = [
-            'success' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <i class = "fa fa-check"></i> <strong> SELAMAT!</strong> <br> Data dengan Kode <u>' . $kodeBarang . '</u> Berhasil ditambah!
+            'success' => '<div class="alert alert-secondary alert-dismissible fade show" role="alert">
+            <i class = "fa fa-check"></i> <strong> SELAMAT!</strong> <br> Data dengan Kode <u>' . $kodeBarang . '</u> Berhasil Diubah!
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -315,6 +327,7 @@ class Barang extends BaseController
         $cekData = $this->barang->find($kode);
 
         if ($cekData) {
+            unlink('upload/' . $cekData['gambar_brg']);
             $this->barang->delete($kode);
 
             session()->setFlashdata('berhasil', 'Data Kategori Berhasil Dihapus');
