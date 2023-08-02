@@ -22,9 +22,11 @@ class Barang extends BaseController
     public function index()
     {
         $keyword = $this->request->getVar('keyword');
+        // $modelBarang = $keyword ? $this->barang->cariData($keyword)->get() : $this->barang->tampilData()->get();
         $modelBarang = $keyword ? $this->barang->cariData($keyword) : $this->barang->tampilData();
+        // $modelBarang = $keyword ? $this->barang->cariData($keyword) : $this->barang->tampilData();
 
-        // $totaldata = $keyword ? $this->barang->cariData($keyword)->countAllResults() : $this->barang->tampilData()->countAllResults();
+
 
         $nohalaman = $this->request->getVar('page_barang');
         ($nohalaman) ? $nohalaman : $nohalaman = 1;

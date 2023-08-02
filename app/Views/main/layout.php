@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistem Informasi Pergudangan</title>
 
+    <script src="<?= base_url() ?>/plugins/jquery/jquery.min.js"></script>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
@@ -82,6 +83,13 @@
                             <a href="<?= base_url('barang'); ?>" class="nav-link">
                                 <i class="nav-icon fa fa-dolly text-info"></i>
                                 <p class="text">Barang</p>
+                            </a>
+                        </li>
+                        <li class="nav-header">Transaksi</li>
+                        <li class="nav-item">
+                            <a href="<?= base_url('barangMasuk'); ?>" class="nav-link">
+                                <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
+                                <p class="text">Barang Masuk</p>
                             </a>
                         </li>
                     </ul>
