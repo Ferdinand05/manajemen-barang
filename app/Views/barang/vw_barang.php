@@ -72,7 +72,7 @@
                         <form action="/barang/delete/<?= $row['kode_brg']; ?>" method="post" class="d-inline">
                             <input type="hidden" name="_method" value="DELETE">
 
-                            <button type="submit" class="btn btn-danger" title="Hapus Data" onclick="return confirm('Apakah anda yakin ingin menghapus, <?= $row['nama_brg']; ?> ')">
+                            <button type="submit" class="btn btn-danger" title="Hapus Data" onclick="return confirm('Apakah anda yakin ingin menghapus, <?= $row['nama_brg']; ?>')">
                                 <i class="fa fa-trash-alt"></i>
                             </button>
                         </form>
@@ -89,7 +89,9 @@
 </div>
 
 
+<script>
 
+</script>
 
 
 

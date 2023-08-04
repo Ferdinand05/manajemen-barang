@@ -101,4 +101,62 @@ class BarangMasuk extends BaseController
             exit('Maaf tidak bisa dipanggil!');
         }
     }
+
+
+    public function hapus()
+    {
+
+        if ($this->request->isAJAX()) {
+            $id = $this->request->getPost('id');
+
+            $modelTempBarang = new ModelTempBarangMasuk();
+            $modelTempBarang->delete($id);
+
+            $json = [
+                'sukses' => 'Item berhasil dihapus!',
+            ];
+            echo json_encode($json);
+        } else {
+            exit('Maaf tidak bisa dipanggil!');
+        }
+    }
+
+
+    public function cariDataBarang()
+    {
+        if ($this->request->isAJAX()) {
+            $json = [
+                'data' => view('barangmasuk/modalcaribarang'),
+            ];
+
+            echo json_encode($json);
+        } else {
+            exit('Maaf tidak bisa dipanggil');
+        }
+    }
+
+
+    public function detailCariBarang()
+    {
+        if ($this->request->isAJAX()) {
+
+            $cari = $this->request->getPost('cari');
+
+            $modelBarang = new ModelBarang();
+
+            $data = $modelBarang->cariData($cari)->get();
+
+            if ($data  != null) {
+
+                $json = [
+                    'data' => view('barangmasuk/detailDataBarang', [
+                        'tampildata' => $data
+                    ]),
+                ];
+                echo json_encode($json);
+            }
+        } else {
+            exit('Maaf tidak bisa dipanggil');
+        }
+    }
 }

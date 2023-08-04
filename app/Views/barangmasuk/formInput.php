@@ -67,15 +67,98 @@
 
     </div>
 
+    <div class="modalcaribarang" style="display: none;">
+
+    </div>
+
 </div>
 
 
 <script>
+    function hapusItem(id) {
+        Swal.fire({
+            title: 'Hapus Item',
+            text: "Apakah anda yakin ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Hapus'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "post",
+                    url: "/barangmasuk/hapus",
+                    data: {
+                        id: id
+                    },
+                    dataType: "json",
+                    success: function(response) {
+
+                        if (response.sukses) {
+                            dataTemp();
+
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: response.sukses,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+
+                        }
+
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + '\n' + thrownError);
+                    }
+                });
+            }
+        })
+    }
+
+
+
+
+
+
+
     function kosong() {
         $('#kdbarang').val('');
         $('#nmbarang').val('');
         $('#hrgjual').val('');
         $('#kdbarang').focus();
+    }
+
+    function ambilDataBarang() {
+        let kodebarang = $('#kdbarang').val();
+
+        $.ajax({
+            type: "post",
+            url: "/barangmasuk/ambilDataBarang",
+            data: {
+                kodebarang: kodebarang
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    let data = response.sukses;
+                    $('#nmbarang').val(data.namabarang);
+                    $('#hrgjual').val(data.hargajual);
+                    $('#hrgbeli').focus();
+                }
+
+                if (response.error) {
+                    alert(response.error);
+                    kosong();
+
+                }
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(xhr.status + '\n' + thrownError);
+            }
+        });
     }
 
     function dataTemp() {
@@ -105,34 +188,8 @@
         $('#kdbarang').keydown(function(e) {
             if (e.keyCode == 13) {
                 e.preventDefault();
-                let kodebarang = $('#kdbarang').val();
 
-                $.ajax({
-                    type: "post",
-                    url: "/barangmasuk/ambilDataBarang",
-                    data: {
-                        kodebarang: kodebarang
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.sukses) {
-                            let data = response.sukses;
-                            $('#nmbarang').val(data.namabarang);
-                            $('#hrgjual').val(data.hargajual);
-                            $('#hrgbeli').focus();
-                        }
-
-                        if (response.error) {
-                            alert(response.error);
-                            kosong();
-
-                        }
-
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status + '\n' + thrownError);
-                    }
-                });
+                ambilDataBarang();
 
             }
         });
@@ -146,13 +203,29 @@
             let hargajual = $('#hrgjual').val();
             console.log(hargabeli);
             if (faktur.length == 0) {
-                alert('Faktur wajib diisi!');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Faktur tidak boleh kosong!',
+                })
             } else if (kodebarang.length == 0) {
-                alert('Maaf, Kode barang tidak boleh kosong!');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Kode Barang tidak boleh kosong!',
+                })
             } else if (hargabeli == 0) {
-                alert('Maaf, Harga Beli tidak boleh kosong!')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Harga Beli tidak boleh kosong!',
+                })
             } else if (jumlah == 0) {
-                alert('Maaf, Jumlah tidak boleh kosong!')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Jumlah tidak boleh kosong!',
+                })
             } else {
 
                 $.ajax({
@@ -182,6 +255,35 @@
             }
 
         });
+
+        $('#btnReload').click(function(e) {
+            e.preventDefault();
+            dataTemp();
+        });
+
+
+        $('#btnCariBarang').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "/barangmasuk/cariDataBarang",
+                dataType: "json",
+                success: function(response) {
+                    if (response.data) {
+                        $('.modalcaribarang').html(response.data).show();
+                        $('#modalcaribarang').modal('show');
+                        $('#modalcaribarang').on('shown.bs.modal', function(event) {
+                            $('#cari').focus();
+                        })
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + '\n' + thrownError);
+                }
+            });
+        });
+
+
+
 
     });
 </script>
