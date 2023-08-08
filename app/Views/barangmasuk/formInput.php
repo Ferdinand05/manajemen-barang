@@ -63,8 +63,12 @@
             </div>
         </div>
     </div>
-    <div class="row" id="tampilDataTemp">
+    <div class="row" id="tampilDataTemp"></div>
 
+    <div class="row justify-content-end">
+        <button type="button" class="btn btn-lg btn-success" id="tombolSelesaiTransaksi">
+            <i class="fa fa-save"></i>Selesai Transaksi
+        </button>
     </div>
 
     <div class="modalcaribarang" style="display: none;">
@@ -127,7 +131,8 @@
         $('#kdbarang').val('');
         $('#nmbarang').val('');
         $('#hrgjual').val('');
-        $('#kdbarang').focus();
+        $('#jumlah').val('');
+        $('#hrgbeli').val('');
     }
 
     function ambilDataBarang() {
@@ -201,7 +206,7 @@
             let hargabeli = $('#hrgbeli').val();
             let jumlah = $('#jumlah').val();
             let hargajual = $('#hrgjual').val();
-            console.log(hargabeli);
+
             if (faktur.length == 0) {
                 Swal.fire({
                     icon: 'error',
@@ -265,12 +270,14 @@
         $('#btnCariBarang').click(function(e) {
             e.preventDefault();
             $.ajax({
-                url: "/barangmasuk/cariDataBarang",
+                // type: 'post',
+                url: "/barangMasuk/cariDataBarang",
                 dataType: "json",
                 success: function(response) {
                     if (response.data) {
                         $('.modalcaribarang').html(response.data).show();
                         $('#modalcaribarang').modal('show');
+
                         $('#modalcaribarang').on('shown.bs.modal', function(event) {
                             $('#cari').focus();
                         })
@@ -282,8 +289,67 @@
             });
         });
 
+        $('#tombolSelesaiTransaksi').click(function(e) {
+            e.preventDefault();
 
+            let faktur = $('#faktur').val();
+            if (faktur.length == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Faktur tidak boleh kosong!'
+                });
+            } else {
+                swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Transaksi akan diselesaikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Simpan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
+                        $.ajax({
+                            type: "post",
+                            url: "/barangmasuk/selesaiTransaksi",
+                            data: {
+                                faktur: faktur,
+                                tglfaktur: $('#tglfaktur').val()
+                            },
+                            dataType: "json",
+                            success: function(response) {
+                                if (response.error) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: response.error,
+                                    });
+                                } else if (response.sukses) {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'success',
+                                        title: response.sukses,
+                                        showConfirmButton: true,
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.reload();
+                                        }
+                                    })
+                                }
+
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                alert(xhr.status + '\n' + thrownError);
+                            }
+                        });
+
+                    }
+                })
+            }
+
+        });
 
     });
 </script>

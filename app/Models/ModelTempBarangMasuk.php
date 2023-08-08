@@ -15,9 +15,6 @@ class ModelTempBarangMasuk extends Model
 
     public function tampilDataTemp($faktur)
     {
-        $builder =  $this->builder('temp_barangmasuk');
-        $builder->join('barang', 'kode_brg = detkodebrg');
-        $query =  $builder->where('detfaktur', $faktur)->get();
-        return $query;
+        return $this->table('temp_barangmasuk')->join('barang', 'kode_brg = detkodebrg')->where(['detfaktur' => $faktur])->get();
     }
 }

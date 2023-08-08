@@ -45,7 +45,7 @@
 
 
             <br>
-            <h5 class="badge badge-info"><?= '1' ?></h5>
+            <h5 class="badge badge-info p-1"> Hasil Pencarian : <?= $totaldata ?></h5>
 
             <?php
             $i = 1 + ($nohalaman - 1) * 5;

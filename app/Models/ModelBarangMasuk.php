@@ -11,4 +11,10 @@ class ModelBarangMasuk extends Model
     protected $allowedFields    = [
         'faktur', 'tglfaktur', 'totalharga'
     ];
+
+
+    public function cariData($keyword)
+    {
+        return $this->table('barangmasuk')->like('faktur', $keyword)->orLike('tglfaktur', $keyword)->orLike('totalharga', $keyword);
+    }
 }

@@ -20,7 +20,7 @@ Options -Indexes
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_URI} (.+)/$
 	RewriteRule ^ %1 [L,R=301]
-
+	RewriteBase /
 	# Rewrite "www.example.com -> example.com"
 	RewriteCond %{HTTPS} !=on
 	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]

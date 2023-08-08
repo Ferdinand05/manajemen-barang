@@ -37,7 +37,7 @@ class Barang extends BaseController
             'barang' => $modelBarang->paginate(5, 'barang'),
             'pager' => $this->barang->pager,
             'nohalaman' => $nohalaman,
-            // 'totaldata' => $totaldata,
+            'totaldata' => $this->barang->pager->getTotal('barang')
 
         ];
 

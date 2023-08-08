@@ -90,7 +90,7 @@
                         </li>
                         <li class="nav-header">Transaksi</li>
                         <li class="nav-item">
-                            <a href="<?= base_url('barangMasuk'); ?>" class="nav-link">
+                            <a href="<?= base_url('barangMasuk/data'); ?>" class="nav-link">
                                 <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
                                 <p class="text">Barang Masuk</p>
                             </a>
@@ -126,7 +126,7 @@
                 <div class="card p-0 m-0">
                     <div class="card-header">
                         <h3 class="card-title ">
-                            <?= esc($subtitle); ?>
+                            <?= $subtitle ?>
                         </h3>
 
                         <div class="card-tools">

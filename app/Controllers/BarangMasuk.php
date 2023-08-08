@@ -5,18 +5,25 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\ModelBarang;
 use App\Models\ModelTempBarangMasuk;
+use App\Models\ModelBarangMasuk;
+use App\Models\ModelDetailBarangMasuk;
 
 class BarangMasuk extends BaseController
 {
 
+    protected $barangmasuk;
 
-
+    public function __construct()
+    {
+        $this->barangmasuk = new ModelBarangMasuk();
+    }
 
     public function index()
     {
+        $tombol = '<a href="/barangmasuk/data" class="btn btn-warning" ><i class="fa fa-backward" ></i> Kembali </a>';
         $data = [
-            'title' => 'Barang Masuk',
-            'subtitle' => 'Manajemen Barang Masuk',
+            'title' => 'Input Barang Masuk',
+            'subtitle' => $tombol,
             'content' => '',
         ];
 
@@ -157,6 +164,116 @@ class BarangMasuk extends BaseController
             }
         } else {
             exit('Maaf tidak bisa dipanggil');
+        }
+    }
+
+
+    public function selesaiTransaksi()
+    {
+
+        if ($this->request->isAJAX()) {
+
+            $faktur = $this->request->getPost('faktur');
+            $tglfaktur = $this->request->getPost('tglfaktur');
+            $modelTemp = new ModelTempBarangMasuk();
+            $dataTempBarang = $modelTemp->builder('temp_barangmasuk')->getWhere(['detfaktur' => $faktur]);
+
+            if ($dataTempBarang->getNumRows() == 0) {
+                $json = [
+                    'error' => 'Data item Untuk faktur ini Tidak ada!'
+                ];
+            } else {
+
+                // simpan ke table barangmasuk
+                $modelBarangmasuk = new ModelBarangMasuk();
+                $totalSubtotal = 0;
+
+                foreach ($dataTempBarang->getResultArray() as $total) :
+
+                    $totalSubtotal += intval($total['detsubtotal']);
+                endforeach;
+
+                $modelBarangmasuk->insert([
+                    'faktur' => $faktur,
+                    'tglfaktur' => $tglfaktur,
+                    'totalharga' => $totalSubtotal
+                ]);
+
+
+                // simpan ke detail_barangmasuk
+                $modelDetailBarangmasuk = new ModelDetailBarangMasuk();
+
+                foreach ($dataTempBarang->getResultArray() as $row) :
+                    $modelDetailBarangmasuk->insert([
+                        'detfaktur' => $row['detfaktur'],
+                        'detkodebrg' => $row['detkodebrg'],
+                        'dethargamasuk' => $row['dethargamasuk'],
+                        'dethargajual' => $row['dethargajual'],
+                        'detjumlah' => $row['detjumlah'],
+                        'detsubtotal' => $row['detsubtotal']
+                    ]);
+                endforeach;
+
+                // Hapus data yg ada di temporary berdasarkan faktur
+                $modelTemp->emptyTable();
+                $json = [
+                    'sukses' => 'Transaksi Berhasil Disimpan!'
+                ];
+            }
+            echo json_encode($json);
+        } else {
+            exit('Maaf tidak bisa dipanggil');
+        }
+    }
+
+
+    public function data()
+    {
+
+
+
+        $keyword = $this->request->getVar('keyword');
+
+        if ($keyword) {
+            $modelBarangmasuk = $this->barangmasuk->cariData($keyword);
+        } else {
+            $modelBarangmasuk = $this->barangmasuk;
+        }
+
+        $nohalaman = $this->request->getVar('page_barangmasuk') ? $this->request->getVar('page_barangmasuk') : 1;
+
+        $data = [
+            'title' => 'Data Transaksi Barang Masuk',
+            'subtitle' => 'Transaksi Barang Masuk',
+            'content' => '',
+            'barangmasuk' => $modelBarangmasuk->paginate(3, 'barangmasuk'),
+            'pager' => $this->barangmasuk->pager,
+            'totaldata' => $this->barangmasuk->pager->getTotal('barangmasuk'),
+            'nohalaman' => $nohalaman,
+
+        ];
+
+        return view('barangmasuk/vw_data', $data);
+    }
+
+
+
+    public function detailItem()
+    {
+        if ($this->request->isAJAX()) {
+            $faktur = $this->request->getPost('faktur');
+            $modelDetailBarangmasuk = new ModelDetailBarangMasuk();
+            $data = [
+                'dataDetail' => $modelDetailBarangmasuk->dataDetail($faktur)
+            ];
+
+            $json = [
+                'data' => view('barangmasuk/modaldetailitem', $data)
+            ];
+
+            echo json_encode($json);
+        } else {
+            exit('Method tidak bisa dipanggil');
         }
     }
 }
