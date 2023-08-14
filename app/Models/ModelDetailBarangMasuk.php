@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use CodeIgniter\Database\SQLite3\Table;
 use CodeIgniter\Model;
 
 class ModelDetailBarangMasuk extends Model
@@ -18,5 +19,27 @@ class ModelDetailBarangMasuk extends Model
     {
 
         return $this->table('detail_barangmasuk')->join('barang', 'kode_brg = detkodebrg')->where('detfaktur', $faktur)->get();
+    }
+
+    public function ambilTotalHarga($faktur)
+    {
+
+        $query = $this->table('detail_barangmasuk')->getWhere([
+            'detfaktur' => $faktur
+        ]);
+
+        $totalHarga = 0;
+        foreach ($query->getResultArray() as $r) {
+            $totalHarga += $r['detsubtotal'];
+        }
+
+        return $totalHarga;
+    }
+
+
+    public function ambilDetailId($iddetail)
+    {
+
+        return $this->builder('detail_barangmasuk')->join('barang', 'kode_brg=detkodebrg')->where('iddetail', $iddetail)->get();
     }
 }

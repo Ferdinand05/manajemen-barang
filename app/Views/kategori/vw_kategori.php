@@ -31,6 +31,7 @@
             <tr>
                 <th scope="col">No.</th>
                 <th scope="col">Nama Kategori</th>
+                <th>Jumlah item</th>
                 <th scope="col">Aksi</th>
             </tr>
         </thead>
@@ -39,13 +40,20 @@
                 'class' => 'btn btn-primary mb-3',
                 'onclick' => "location.href=('" . site_url('kategori/formTambah') . "')"
             ]); ?>
+            <br>
+            <h5 class="badge badge-primary d-inline-block">
+                Total Kategori : <?= $totaldata; ?>
+            </h5>
+
             <?php
+            $db = \Config\Database::connect();
             $i = 1 + ($nohalaman - 1) * 5;
             foreach ($kategori as $row) :
             ?>
                 <tr>
                     <th scope="row" style="width: 10%;"><?= $i; ?></th>
                     <td><?= $row["kat_nama"]; ?></td>
+                    <td style="width: 15%;" class="text-center"><?= $db->table('barang')->where('brg_katid', $row['kat_id'])->countAllResults(); ?></td>
                     <td style="width: 20%;">
                         <button type="button" class="btn btn-info mb-2" title="Edit Data" onclick="edit('<?= $row['kat_id']; ?>');">
                             <i class="fa fa-edit"></i>

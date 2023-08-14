@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\ModelBarang;
 use App\Models\ModelKategori;
 use Config\Pager;
 
@@ -25,6 +26,8 @@ class Kategori extends BaseController
             $modelKategori = $this->kategori;
         }
 
+
+
         $noHalaman = $this->request->getVar('page_kategori') ? $this->request->getVar('page_kategori') : 1;
         $data = [
             'title' => 'Manajemen Data Kategori',
@@ -32,6 +35,7 @@ class Kategori extends BaseController
             'content' => '',
             'kategori' => $modelKategori->paginate(5, 'kategori'),
             'pager' => $this->kategori->pager,
+            'totaldata' => $this->kategori->pager->getTotal('kategori'),
             'nohalaman' => $noHalaman
         ];
 

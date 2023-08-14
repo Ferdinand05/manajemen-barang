@@ -55,6 +55,13 @@
                     </td>
                     <td><?= number_format($row['totalharga'], 0, ',', '.'); ?></td>
                     <td>
+                        <button type="button" class="btn btn-outline-info" title="Edit" onclick="edit('<?= sha1($row['faktur']) ?>')">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        &nbsp;
+                        <button type="button" class="btn btn-outline-danger" title="Hapus" onclick="hapusFaktur('<?= $row['faktur'] ?>')">
+                            <i class="fa fa-trash-alt"></i>
+                        </button>
                     </td>
                 </tr>
 
@@ -73,6 +80,52 @@
 </div>
 
 <script>
+    function edit(faktur) {
+        window.location.href = ('/barangMasuk/edit/' + faktur);
+    }
+
+    function hapusFaktur(faktur) {
+        Swal.fire({
+            title: 'Hapus Faktur Transaksi',
+            text: "Apakah anda yakin ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Hapus'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "post",
+                    url: "/barangmasuk/hapusFaktur",
+                    data: {
+                        faktur: faktur
+                    },
+                    dataType: "json",
+                    success: function(response) {
+
+                        if (response.sukses) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: response.sukses,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            window.location.reload();
+
+
+                        }
+
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status + '\n' + thrownError);
+                    }
+                });
+            }
+        })
+    }
+
     function detailItem(faktur) {
         $.ajax({
             type: "post",
@@ -95,6 +148,7 @@
         });
     }
 </script>
+
 
 
 <?= $this->endSection(); ?>

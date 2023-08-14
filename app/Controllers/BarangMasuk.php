@@ -229,9 +229,6 @@ class BarangMasuk extends BaseController
 
     public function data()
     {
-
-
-
         $keyword = $this->request->getVar('keyword');
 
         if ($keyword) {
@@ -246,7 +243,7 @@ class BarangMasuk extends BaseController
             'title' => 'Data Transaksi Barang Masuk',
             'subtitle' => 'Transaksi Barang Masuk',
             'content' => '',
-            'barangmasuk' => $modelBarangmasuk->paginate(3, 'barangmasuk'),
+            'barangmasuk' => $modelBarangmasuk->paginate(5, 'barangmasuk'),
             'pager' => $this->barangmasuk->pager,
             'totaldata' => $this->barangmasuk->pager->getTotal('barangmasuk'),
             'nohalaman' => $nohalaman,
@@ -274,6 +271,199 @@ class BarangMasuk extends BaseController
             echo json_encode($json);
         } else {
             exit('Method tidak bisa dipanggil');
+        }
+    }
+
+
+    public function edit($faktur)
+    {
+        $modelBarangmasuk = new ModelBarangMasuk();
+
+        $cekFaktur = $modelBarangmasuk->cekFaktur($faktur);
+
+        if ($cekFaktur->getNumRows() > 0) {
+            $row = $cekFaktur->getRowArray();
+
+            $tombol = '<a href="/barangmasuk/data" class="btn btn-warning" ><i class="fa fa-backward" ></i> Kembali </a>';
+            $data = [
+                'title' => 'Edit Barang Masuk',
+                'subtitle' => $tombol,
+                'content' => '',
+                'nofaktur' => $row['faktur'],
+                'tanggal' => $row['tglfaktur']
+            ];
+
+            return view('barangmasuk/editBarangMasuk', $data);
+        } else {
+            exit('Data tidak ditemukan');
+        }
+    }
+
+
+    public function dataDetail()
+    {
+        if ($this->request->isAJAX()) {
+            $faktur = $this->request->getPost('faktur');
+
+            $modelDetail = new ModelDetailBarangMasuk();
+
+            $data = [
+                'dataDetail' => $modelDetail->dataDetail($faktur),
+            ];
+
+            $totalHargaFaktur = number_format($modelDetail->ambilTotalHarga($faktur), '0', ',', '.');
+            $json = [
+                'data' => view('barangmasuk/dataDetail', $data),
+                'totalharga' => $totalHargaFaktur
+            ];
+            echo json_encode($json);
+        }
+    }
+
+
+    public function editItem()
+    {
+
+        if ($this->request->isAJAX()) {
+            $iddetail = $this->request->getPost('iddetail');
+
+            $modelDetail = new ModelDetailBarangMasuk();
+            $ambilData = $modelDetail->ambilDetailId($iddetail);
+            $row = $ambilData->getRowArray();
+
+            $data = [
+                'kodebarang' => $row['detkodebrg'],
+                'namabarang' => $row['nama_brg'],
+                'hargajual' => $row['dethargajual'],
+                'hargabeli' => $row['dethargamasuk'],
+                'jumlah' => $row['detjumlah']
+            ];
+
+            $json = [
+                'sukses' => $data
+            ];
+
+            echo json_encode($json);
+        }
+    }
+
+
+    public function simpanDetail()
+    {
+        if ($this->request->isAJAX()) {
+            $faktur = $this->request->getPost('faktur');
+            $kodebarang = $this->request->getPost('kodebarang');
+            $hargabeli = $this->request->getPost('hargabeli');
+            $hargajual = $this->request->getPost('hargajual');
+            $jumlah = $this->request->getPost('jumlah');
+
+            $modelDetailBarang = new ModelDetailBarangMasuk();
+            $modelBarangmasuk = new ModelBarangMasuk();
+            $modelDetailBarang->insert([
+                'detfaktur' => $faktur,
+                'detkodebrg' => $kodebarang,
+                'dethargamasuk' => $hargabeli,
+                'dethargajual' => $hargajual,
+                'detjumlah' => $jumlah,
+                'detsubtotal' => intval($jumlah) * intval($hargabeli)
+            ]);
+
+            $ambilTotalHarga = $modelDetailBarang->ambilTotalHarga($faktur);
+            $modelBarangmasuk->update($faktur, [
+                'totalharga' => $ambilTotalHarga
+            ]);
+
+            $json = [
+                'sukses' =>  'Item berhasil ditambahkan'
+            ];
+            echo json_encode($json);
+        } else {
+            exit('Maaf tidak bisa dipanggil!');
+        }
+    }
+
+    public function updateItem()
+    {
+
+        if ($this->request->isAJAX()) {
+            $faktur = $this->request->getPost('faktur');
+            $kodebarang = $this->request->getPost('kodebarang');
+            $hargabeli = $this->request->getPost('hargabeli');
+            $hargajual = $this->request->getPost('hargajual');
+            $jumlah = $this->request->getPost('jumlah');
+            $iddetail = $this->request->getPost('iddetail');
+
+            $modelDetail = new ModelDetailBarangMasuk();
+            $modelBarangmasuk = new ModelBarangMasuk();
+
+            $modelDetail->update($iddetail, [
+                'dethargamasuk' => $hargabeli,
+                'dethargajual' => $hargajual,
+                'detjumlah' => $jumlah,
+                'detsubtotal' => intval($hargabeli) * intval($jumlah)
+            ]);
+
+            // update totalHarga
+            $ambilTotalHarga = $modelDetail->ambilTotalHarga($faktur);
+            $modelBarangmasuk->update($faktur, [
+                'totalharga' => $ambilTotalHarga
+            ]);
+
+            $json = [
+                'sukses' => 'Item ' . $kodebarang . ' Berhasil Diubah!'
+            ];
+            echo json_encode($json);
+        }
+    }
+
+    public function hapusItemDetail()
+    {
+
+        if ($this->request->isAJAX()) {
+
+            $iddetail = $this->request->getPost('id');
+            $faktur = $this->request->getPost('faktur');
+
+            // hapus data di detail_barangmasuk
+            $modelDetail = new ModelDetailBarangMasuk();
+            $modelDetail->delete($iddetail);
+
+
+            // update harga dari faktur di barangmasuk
+            $updateTotalHarga = $modelDetail->ambilTotalHarga($faktur);
+            $modelBarangmasuk = new ModelBarangMasuk();
+            $modelBarangmasuk->update($faktur, [
+                'totalharga' => $updateTotalHarga
+            ]);
+
+            $json = [
+                'sukses' => 'Item Berhasil Dihapus!'
+            ];
+
+            echo json_encode($json);
+        }
+    }
+
+
+    public function hapusFaktur()
+    {
+        if ($this->request->isAJAX()) {
+
+            $faktur = $this->request->getPost('faktur');
+
+            $modelDetail = new ModelDetailBarangMasuk();
+            $modelBarangMasuk = new ModelBarangMasuk();
+
+            $modelDetail->delete([
+                'detfaktur' => $faktur
+            ]);
+            $modelBarangMasuk->delete($faktur);
+
+            $json = [
+                'sukses' => 'Data Transaksi berhasil Dihapus!'
+            ];
+
+            echo json_encode($json);
         }
     }
 }

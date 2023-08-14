@@ -69,7 +69,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- master -->
-                        <li class="nav-header">Master</li>
+                        <li class="nav-header ">Master</li>
                         <li class="nav-item">
                             <a href="<?= base_url('kategori'); ?>" class="nav-link">
                                 <i class="nav-icon fa fa-tasks text-info"></i>
@@ -82,7 +82,7 @@
                                 <p class="text">Satuan</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item user-panel">
                             <a href="<?= base_url('barang'); ?>" class="nav-link">
                                 <i class="nav-icon fa fa-dolly text-info"></i>
                                 <p class="text">Barang</p>

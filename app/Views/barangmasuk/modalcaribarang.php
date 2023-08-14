@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Cari berdasarkan Kode / Nama" id="cari" autofocus>
+                    <input type="text" class="form-control" placeholder="Cari berdasarkan Kode / Nama" id="cari">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="button" id="btnCari">
                             <i class="fa fa-search-plus"></i>
@@ -31,9 +31,10 @@
 <script>
     function cariDataBarang() {
         let cari = $('#cari').val();
+
         $.ajax({
             type: "post",
-            url: "barangmasuk/detailCariBarang",
+            url: "/barangMasuk/detailCariBarang",
             data: {
                 cari: cari
             },
@@ -47,7 +48,7 @@
 
                 }
             },
-            function(xhr, ajaxOptions, thrownError) {
+            error: function(xhr, ajaxOptions, thrownError) {
                 alert(xhr.status + '\n' + thrownError);
             }
         });
