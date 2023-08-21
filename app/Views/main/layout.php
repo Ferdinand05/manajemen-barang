@@ -95,6 +95,12 @@
                                 <p class="text">Barang Masuk</p>
                             </a>
                         </li>
+                        <li class="nav-item user-panel">
+                            <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
+                                <i class="nav-icon fa fa-truck-loading text-success"></i>
+                                <p class="text">Barang Keluar</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
