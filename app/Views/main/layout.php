@@ -16,6 +16,7 @@
     <!-- sweetalert2 -->
     <link rel="stylesheet" href="<?= base_url() ?>/plugins/sweetalert2/sweetalert2.min.css">
     <script src="<?= base_url() ?>/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+
 </head>
 
 <body class="hold-transition sidebar-mini">

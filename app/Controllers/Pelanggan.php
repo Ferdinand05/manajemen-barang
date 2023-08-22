@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\ModelDataPelanggan;
 use App\Models\ModelPelanggan;
+use Config\Services;
 
 class Pelanggan extends BaseController
 {
@@ -85,16 +87,54 @@ class Pelanggan extends BaseController
     public function daftarPelanggan()
     {
 
-        $totalPelanggan = $this->pelanggan->countAllResults();
-        $data = [
-            'pelanggan' => $this->pelanggan->findAll(),
-            'totalPelanggan' => $totalPelanggan,
-        ];
+        if ($this->request->isAJAX()) {
+            $json = [
+                'data' => view('pelanggan/modalPelanggan')
+            ];
+        }
+        echo json_encode($json);
+    }
 
-        $json = [
-            'data' => view('pelanggan/modalPelanggan', $data)
-        ];
+    public function listData()
+    {
+        $request = Services::request();
+        $datamodel = new ModelDataPelanggan($request);
+        if ($request->getPost()) {
+            $lists = $datamodel->get_datatables();
+            $data = [];
+            $no = $request->getPost("start");
+            foreach ($lists as $list) {
+                $no++;
+                $row = [];
+                $btnPilih = '<button type="button" class="btn btn-secondary btn-sm" onclick="pilihPelanggan(\'' . $list->id . '\',\'' . $list->nama . '\')">Select</button>';
+                $btnHapus = '<button type="button" class="btn btn-danger btn-sm" onclick="hapusPelanggan(\'' . $list->id . '\',\'' . $list->nama . '\')">Delete</button>';
+                $row[] = $no;
+                $row[] = $list->nama;
+                $row[] = $list->telepon;
+                $row[] = $btnPilih . " " . $btnHapus;
+                $data[] = $row;
+            }
+            $output = [
+                "draw" => $request->getPost('draw'),
+                "recordsTotal" => $datamodel->count_all(),
+                "recordsFiltered" => $datamodel->count_filtered(),
+                "data" => $data
+            ];
+            echo json_encode($output);
+        }
+    }
 
+    public function hapusPelanggan()
+    {
+        if ($this->request->isAJAX()) {
+
+            $id = $this->request->getPost('id');
+            $this->pelanggan->delete($id);
+
+            $json = [
+                'sukses' => 'Data Pelanggan Berhasil Dihapus!'
+            ];
+        }
         echo json_encode($json);
     }
 }

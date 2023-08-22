@@ -4,9 +4,18 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\ModelBarangkeluar;
+use App\Models\ModelBarangMasuk;
+use App\Models\ModelTempBarangkeluar;
 
 class BarangKeluar extends BaseController
 {
+    protected $barangmasuk, $temp_barangkeluar;
+
+    public function __construct()
+    {
+        $this->barangmasuk = new ModelBarangMasuk();
+        $this->temp_barangkeluar = new ModelTempBarangkeluar();
+    }
 
     private function buatFaktur()
     {
@@ -72,5 +81,26 @@ class BarangKeluar extends BaseController
 
 
         return view('barangkeluar/formInput', $data);
+    }
+
+
+    public function viewDataTemp()
+    {
+        if ($this->request->isAJAX()) {
+
+            $nofaktur = $this->request->getPost('nofaktur');
+
+
+            $dataTemp = $this->temp_barangkeluar->tampilDataTemp($nofaktur);
+
+            $data = [
+                'tampilData' => $dataTemp
+            ];
+
+            $json = [
+                'data' => view('barangkeluar/dataTemp', $data)
+            ];
+        }
+        echo json_encode($json);
     }
 }
