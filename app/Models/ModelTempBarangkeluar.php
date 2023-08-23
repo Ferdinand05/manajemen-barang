@@ -15,6 +15,6 @@ class ModelTempBarangkeluar extends Model
 
     public function tampilDataTemp($nofaktur)
     {
-        return $this->builder('temp_barangkeluar')->join('barang', 'detkodebrg = kode_brg')->where('detfaktur', $nofaktur)->get();
+        return $this->builder('temp_barangkeluar')->join('barang b', 'detkodebrg = b.kode_brg')->where('detfaktur', $nofaktur)->get();
     }
 }

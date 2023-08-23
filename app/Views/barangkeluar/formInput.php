@@ -92,11 +92,129 @@
 
     </div>
 
+    <div class="viewModalCariBarang" id="viewModalCariBarang">
+
+    </div>
+
 
 </div>
 
 
 <script>
+    function simpanItem() {
+
+        let nofaktur = $('#nofaktur').val();
+        let kodebarang = $('#kodeBarang').val();
+        let namabarang = $('#namaBarang').val();
+        let jumlah = $('#jumlah').val();
+        let hargajual = $('#hargaJual').val();
+
+        if (kodebarang.length == 0) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Kode Barang Tidak Boleh  Kosong!',
+            });
+            Kosongkan();
+        } else {
+
+            $.ajax({
+                type: "post",
+                url: "/barangkeluar/simpanItem",
+                data: {
+                    nofaktur: nofaktur,
+                    kodebarang: kodebarang,
+                    namabarang: namabarang,
+                    jumlah: jumlah,
+                    hargajual: hargajual
+                },
+                dataType: "json",
+                success: function(response) {
+
+                    if (response.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.error,
+                        });
+                        Kosongkan();
+                    }
+
+                    if (response.sukses) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: response.sukses,
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        viewDataTemp();
+                        Kosongkan();
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + '\n' + thrownError);
+                }
+            });
+
+        }
+
+    }
+
+    function Kosongkan() {
+        $('#kodeBarang').val('');
+        $('#namaBarang').val('');
+        $('#hargaJual').val('');
+        $('#jumlah').val(1);
+    }
+
+    function ambilDataBarang() {
+
+        let kodebarang = $('#kodeBarang').val();
+        if (kodebarang.length == 0) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Kode Barang Kosong!',
+            });
+            Kosongkan();
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/barangkeluar/ambilDataBarang",
+                data: {
+
+                    kodebarang: kodebarang,
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.error,
+                        });
+                        Kosongkan();
+                    }
+
+
+                    if (response.sukses) {
+                        let data = response.sukses;
+                        $('#namaBarang').val(data.namabarang);
+                        $('#hargaJual').val(data.hargajual);
+                        $('#jumlah').focus();
+                    }
+
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + '\n' + thrownError);
+                }
+            });
+        }
+    }
+
     function viewDataTemp() {
         let faktur = $('#nofaktur').val();
 
@@ -135,6 +253,7 @@
             dataType: "json",
             success: function(response) {
                 $('#nofaktur').val(response.nofaktur);
+                viewDataTemp();
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(xhr.status + '\n' + thrownError);
@@ -152,7 +271,6 @@
         $('#tglfaktur').change(function(e) {
             e.preventDefault();
             buatNoFaktur();
-            viewDataTemp();
         });
 
         $('#btnTambahPelanggan').click(function(e) {
@@ -194,6 +312,46 @@
             });
 
         });
+
+
+        $('#kodeBarang').keydown(function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                ambilDataBarang();
+            }
+        });
+
+
+        $('#btnSimpan').click(function(e) {
+            e.preventDefault();
+
+            simpanItem();
+        });
+
+
+
+        $('#btnCariBarang').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: "post",
+                url: "/barangkeluar/modalCariBarang",
+                dataType: "json",
+                success: function(response) {
+                    if (response.data) {
+
+                        $('#viewModalCariBarang').html(response.data);
+                        $('#modalCariBarang').modal('show');
+
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + '\n' + thrownError);
+                }
+            });
+        });
+
+
+
 
 
 
