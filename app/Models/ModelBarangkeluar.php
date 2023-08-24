@@ -9,7 +9,7 @@ class ModelBarangkeluar extends Model
     protected $table            = 'barangkeluar';
     protected $primaryKey       = 'faktur';
     protected $allowedFields    = [
-        'faktur', 'tglfaktur', 'idplgn', 'totalharga'
+        'faktur', 'tglfaktur', 'idplgn', 'totalharga', 'jumlahuang', 'sisauang'
     ];
 
 

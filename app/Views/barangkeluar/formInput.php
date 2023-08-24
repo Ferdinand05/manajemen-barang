@@ -4,7 +4,7 @@
 
 <?= $this->section('content'); ?>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg">
             <div class="form-group">
                 <label for="jumlah">Quantity</label>
                 <div class="input-group mb-2">
@@ -69,14 +69,16 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg-4">
             <div class="form-group">
-                <label for="jumlah">#</label>
-                <div class="input-group mb-2">
-                    <button type="button" class="btn btn-success" title="simpan item" id="btnSimpan"><i class="fa fa-save"></i></button>
+                <label for="jumlah">Aksi</label>
+                <div class="input-group mb-2 btn-group">
+                    <button type="button" class="btn btn-success" title="simpan item" id="btnSimpan"> <i class="fa fa-save"></i> Simpan </button>
+                    <button type="button" class="btn btn-primary " title="selesai transaksi" id="btnSelesaiTransaksi"> <i class="fas fa-hand-holding-usd"></i> Selesai Transaksi </button>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="row">
@@ -349,6 +351,49 @@
                 }
             });
         });
+
+
+
+        $('#btnSelesaiTransaksi').click(function(e) {
+            e.preventDefault();
+
+            let nofaktur = $('#nofaktur').val();
+            let tglfaktur = $('#tglfaktur').val();
+            let idpelanggan = $('#idPelanggan').val();
+            let totalharga = $('#totalHarga').val();
+
+            $.ajax({
+                type: "post",
+                url: "/barangkeluar/modalPembayaran",
+                data: {
+                    nofaktur: nofaktur,
+                    tglfaktur: tglfaktur,
+                    idpelanggan: idpelanggan,
+                    totalharga: totalharga
+                },
+                dataType: "json",
+                success: function(response) {
+
+                    if (response.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.error,
+                        })
+                    }
+
+                    if (response.data) {
+                        $('.viewModalPelanggan').html(response.data);
+                        $('#modalPembayaran').modal('show');
+                    }
+
+                }
+            });
+
+
+        });
+
+
 
 
 

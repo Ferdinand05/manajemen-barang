@@ -8,16 +8,18 @@ use App\Models\ModelBarangkeluar;
 use App\Models\ModelBarangMasuk;
 use App\Models\ModelTempBarangkeluar;
 use App\Models\ModelDataBarang;
+use CodeIgniter\Model;
 use Config\Services;
 
 class BarangKeluar extends BaseController
 {
-    protected $barangmasuk, $temp_barangkeluar;
+    protected $barangmasuk, $temp_barangkeluar, $barangkeluar;
 
     public function __construct()
     {
         $this->barangmasuk = new ModelBarangMasuk();
         $this->temp_barangkeluar = new ModelTempBarangkeluar();
+        $this->barangkeluar = new ModelBarangkeluar();
     }
 
     private function buatFaktur()
@@ -232,6 +234,64 @@ class BarangKeluar extends BaseController
                 "data" => $data
             ];
             echo json_encode($output);
+        }
+    }
+
+    public function modalPembayaran()
+    {
+
+        if ($this->request->isAJAX()) {
+
+            $nofaktur = $this->request->getPost('nofaktur');
+            $idpelanggan = $this->request->getPost('idpelanggan');
+            $totalharga = $this->request->getPost('totalharga');
+            $tglfaktur = $this->request->getPost('tglfaktur');
+
+            $Cekdata = $this->temp_barangkeluar->tampilDataTemp($nofaktur);
+
+            if ($Cekdata->getNumRows() <= 0) {
+                $json = [
+                    'error' => 'Item/Barang Masih Kosong'
+                ];
+            } else {
+
+                $data = [
+                    'nofaktur' => $nofaktur,
+                    'idpelanggan' => $idpelanggan,
+                    'totalharga' => $totalharga,
+                    'tglfaktur' => $tglfaktur
+                ];
+
+                $json =  [
+                    'data' => view('barangkeluar/modalPembayaran', $data)
+                ];
+            }
+            return $this->response->setJSON($json);
+        }
+    }
+
+    public function simpanPembayaran()
+    {
+        if ($this->request->isAJAX()) {
+            $arr = ['Rp.', '.'];
+            $nofaktur = $this->request->getVar('fakturPembayaran');
+            $tglfaktur = $this->request->getPost('tglFaktur');
+            $idPelanggan = $this->request->getPost('idPelanggan');
+            $totalBayar = str_replace($arr, '', $this->request->getPost('totalBayar'));
+            $uang = str_replace($arr, '', $this->request->getPost('uang'));
+            $sisauang = str_replace($arr, '', $this->request->getPost('sisaUang'));
+
+
+            // simpan ke table Barangkeluar
+            $modelBarangKeluar = new ModelBarangkeluar();
+            $modelBarangKeluar->insert([
+                'faktur' => $nofaktur,
+                'tglfaktur' => $tglfaktur,
+                'idplgn' => $idPelanggan,
+                'totalharga' => $totalBayar,
+                'jumlahuang' => $uang,
+                'sisauang' => $sisauang
+            ]);
         }
     }
 }

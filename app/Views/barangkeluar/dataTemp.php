@@ -44,6 +44,7 @@
             </td>
             <td colspan="2" class="text-center">
                 <h5><?= number_format($totalharga, 0, ',', '.') ?></h5>
+                <input type="hidden" id="totalHarga" value="<?= $totalharga; ?>">
             </td>
         </tr>
 
