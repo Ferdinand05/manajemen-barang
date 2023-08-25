@@ -73,6 +73,7 @@
 
                         <!-- controller/view Kasir -->
                         <?php if (session('idlevel') == 1) : ?>
+
                             <li class="nav-item user-panel">
                                 <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
                                     <i class="nav-icon fa fa-truck-loading text-success"></i>
@@ -83,7 +84,15 @@
 
                         <!-- controller/view Gudang -->
                         <?php if (session('idlevel') == 2) : ?>
+                            <li class="nav-header ">Master</li>
                             <li class="nav-item">
+                                <a href="<?= base_url('barang'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-dolly text-info"></i>
+                                    <p class="text">Barang</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item user-panel">
                                 <a href="<?= base_url('barangMasuk/data'); ?>" class="nav-link">
                                     <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
                                     <p class="text">Barang Masuk</p>
@@ -146,6 +155,19 @@
                                 <a href="<?= base_url('barang'); ?>" class="nav-link">
                                     <i class="nav-icon fa fa-dolly text-info"></i>
                                     <p class="text">Barang</p>
+                                </a>
+                            </li>
+                            <li class="nav-header">Transaksi</li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('barangMasuk/data'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
+                                    <p class="text">Barang Masuk</p>
+                                </a>
+                            </li>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-truck-loading text-success"></i>
+                                    <p class="text">Barang Keluar</p>
                                 </a>
                             </li>
                         <?php endif; ?>

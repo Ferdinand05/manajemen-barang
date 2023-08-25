@@ -2,6 +2,9 @@
 
 namespace Config;
 
+use App\Filters\FilterAdmin;
+use App\Filters\FilterGudang;
+use App\Filters\FilterKasir;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
@@ -21,6 +24,9 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'filterAdmin' => FilterAdmin::class,
+        'filterKasir' => FilterKasir::class,
+        'filterGudang' => FilterGudang::class
     ];
 
     /**
@@ -28,12 +34,36 @@ class Filters extends BaseConfig
      * applied before and after every request.
      */
     public array $globals = [
+        // Sebelum Login tidak Boleh Masuk
         'before' => [
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'filterAdmin' => [
+                // Kecuali ke ->
+                'except' => ['login/*', 'login', '/']
+            ],
+            'filterGudang' => [
+                // Kecuali ke ->
+                'except' => ['login/*', 'login', '/']
+            ],
+            'filterKasir' => [
+                // Kecuali ke ->
+                'except' => ['login/*', 'login', '/']
+            ],
         ],
+        // Setelah Login boleh Masuk
         'after' => [
+            'filterAdmin' => [
+                // kecuali ke ->
+                'except' => ['main/*', 'barang/*', 'kategori/*', 'satuan/*', 'barang', 'kategori', 'satuan', 'barangmasuk', 'barangkeluar', 'barangmasuk/*', 'barangkeluar/*']
+            ],
+            'filterGudang' => [
+                'except' => ['main/*', 'barang', 'barangmasuk/*', 'barangmasuk']
+            ],
+            'filterKasir' => [
+                'except' => ['main/*', 'barangkeluar/*', 'barangkeluar']
+            ],
             'toolbar',
             // 'honeypot',
             // 'secureheaders',

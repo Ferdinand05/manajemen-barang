@@ -66,7 +66,7 @@ class BarangKeluar extends BaseController
 
     public function data()
     {
-        $btnInput = '    <a href="/barangkeluar/input" class="btn btn-primary mb-2">Input Barang Masuk <i class="fa fa-plus"></i></a>';
+        $btnInput = '    <a href="/barangkeluar/input" class="btn btn-primary mb-2">Input Barang Keluar <i class="fa fa-plus"></i></a>';
         $data = [
             'title' => 'Manajemen Transaksi Barang Keluar',
             'subtitle' => $btnInput,
