@@ -310,6 +310,9 @@
                         $('#modalDaftarPelanggan').modal('show');
                     }
 
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + '\n' + thrownError);
                 }
             });
 
@@ -387,6 +390,9 @@
                         $('#modalPembayaran').modal('show');
                     }
 
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + '\n' + thrownError);
                 }
             });
 

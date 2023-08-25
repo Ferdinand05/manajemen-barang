@@ -129,6 +129,28 @@
                 },
                 success: function(response) {
 
+                    if (response.sukses) {
+
+                        Swal.fire({
+                            title: response.sukses,
+                            text: "Apakah anda Ingin Mencetak Faktur ?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, Cetak Faktur'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                let windowCetak = window.open(response.cetakfaktur, "Cetak Faktur Barang Keluar", "width=250,height=500");
+                                windowCetak.focus();
+                                window.location.reload();
+                            } else {
+                                window.location.reload();
+                            }
+                        })
+
+                    }
+
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(xhr.status + '\n' + thrownError);

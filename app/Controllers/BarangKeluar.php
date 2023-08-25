@@ -8,18 +8,20 @@ use App\Models\ModelBarangkeluar;
 use App\Models\ModelBarangMasuk;
 use App\Models\ModelTempBarangkeluar;
 use App\Models\ModelDataBarang;
+use App\Models\ModelDetailBarangkeluar;
 use CodeIgniter\Model;
 use Config\Services;
 
 class BarangKeluar extends BaseController
 {
-    protected $barangmasuk, $temp_barangkeluar, $barangkeluar;
+    protected $barangmasuk, $temp_barangkeluar, $barangkeluar, $detail_barangkeluar;
 
     public function __construct()
     {
         $this->barangmasuk = new ModelBarangMasuk();
         $this->temp_barangkeluar = new ModelTempBarangkeluar();
         $this->barangkeluar = new ModelBarangkeluar();
+        $this->detail_barangkeluar = new ModelDetailBarangkeluar();
     }
 
     private function buatFaktur()
@@ -283,8 +285,8 @@ class BarangKeluar extends BaseController
 
 
             // simpan ke table Barangkeluar
-            $modelBarangKeluar = new ModelBarangkeluar();
-            $modelBarangKeluar->insert([
+
+            $this->barangkeluar->insert([
                 'faktur' => $nofaktur,
                 'tglfaktur' => $tglfaktur,
                 'idplgn' => $idPelanggan,
@@ -292,6 +294,28 @@ class BarangKeluar extends BaseController
                 'jumlahuang' => $uang,
                 'sisauang' => $sisauang
             ]);
+
+            $row = $this->temp_barangkeluar->getWhere(['detfaktur' => $nofaktur]);
+            $fieldData = [];
+            foreach ($row->getResultArray() as $r) {
+                $fieldData[] = [
+                    'detfaktur' => $r['detfaktur'],
+                    'detkodebrg' => $r['detkodebrg'],
+                    'dethargajual' => $r['dethargajual'],
+                    'detjumlah' => $r['detjumlah'],
+                    'detsubtotal' => $r['detsubtotal'],
+                ];
+            }
+
+            $this->detail_barangkeluar->insertBatch($fieldData);
+            $this->temp_barangkeluar->where('detfaktur', $nofaktur)->delete();
+
+            $json = [
+                'sukses' => 'Pembayaran Berhasil Diinput!',
+                'cetakfaktur' => site_url('barangkeluar/cetakfaktur/' . $nofaktur)
+            ];
+
+            return $this->response->setJSON($json);
         }
     }
 }

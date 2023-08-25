@@ -60,7 +60,7 @@
                         <img src="<?= base_url() ?>/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Administrator</a>
+                        <a href="#" class="d-block"><?= session('username') ?></a>
                     </div>
                 </div>
 
@@ -70,36 +70,90 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- master -->
-                        <li class="nav-header ">Master</li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('kategori'); ?>" class="nav-link">
-                                <i class="nav-icon fa fa-tasks text-info"></i>
-                                <p class="text">Kategori</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('satuan'); ?>" class="nav-link">
-                                <i class="nav-icon fa fa-percent text-info"></i>
-                                <p class="text">Satuan</p>
-                            </a>
-                        </li>
-                        <li class="nav-item user-panel">
-                            <a href="<?= base_url('barang'); ?>" class="nav-link">
-                                <i class="nav-icon fa fa-dolly text-info"></i>
-                                <p class="text">Barang</p>
-                            </a>
-                        </li>
-                        <li class="nav-header">Transaksi</li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('barangMasuk/data'); ?>" class="nav-link">
-                                <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
-                                <p class="text">Barang Masuk</p>
-                            </a>
-                        </li>
-                        <li class="nav-item user-panel">
-                            <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
-                                <i class="nav-icon fa fa-truck-loading text-success"></i>
-                                <p class="text">Barang Keluar</p>
+
+                        <!-- controller/view Kasir -->
+                        <?php if (session('idlevel') == 1) : ?>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-truck-loading text-success"></i>
+                                    <p class="text">Barang Keluar</p>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <!-- controller/view Gudang -->
+                        <?php if (session('idlevel') == 2) : ?>
+                            <li class="nav-item">
+                                <a href="<?= base_url('barangMasuk/data'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
+                                    <p class="text">Barang Masuk</p>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <!-- controller/view OWNER -->
+                        <?php if (session('idlevel') == 3) : ?>
+                            <li class="nav-header ">Master</li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('kategori'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-tasks text-info"></i>
+                                    <p class="text">Kategori</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('satuan'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-percent text-info"></i>
+                                    <p class="text">Satuan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('barang'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-dolly text-info"></i>
+                                    <p class="text">Barang</p>
+                                </a>
+                            </li>
+                            <li class="nav-header">Transaksi</li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('barangMasuk/data'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-dolly-flatbed text-success"></i>
+                                    <p class="text">Barang Masuk</p>
+                                </a>
+                            </li>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-truck-loading text-success"></i>
+                                    <p class="text">Barang Keluar</p>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <!-- controller/view Admin -->
+                        <?php if (session('idlevel') == 4) : ?>
+                            <li class="nav-header ">Master</li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('kategori'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-tasks text-info"></i>
+                                    <p class="text">Kategori</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('satuan'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-percent text-info"></i>
+                                    <p class="text">Satuan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('barang'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-dolly text-info"></i>
+                                    <p class="text">Barang</p>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <li class="nav-item mt-3">
+                            <a href="<?= base_url('login/logout'); ?>" class="nav-link text-center btn btn-danger">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <p class="text">Logout</p>
                             </a>
                         </li>
                     </ul>

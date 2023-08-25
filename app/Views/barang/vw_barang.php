@@ -85,7 +85,7 @@
 
         </tbody>
     </table>
-
+    <?= $pager->links('barang', 'page_gudang'); ?>
 </div>
 
 
