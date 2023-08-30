@@ -12,4 +12,10 @@ class ModelDetailBarangkeluar extends Model
     protected $allowedFields    = [
         'id', 'detfaktur', 'detkodebrg', 'dethargajual', 'detjumlah', 'detsubtotal'
     ];
+
+    public function tampilDataFaktur($faktur)
+    {
+
+        return $this->builder('detail_barangkeluar')->where('detfaktur', $faktur)->join('barang as brg', 'kode_brg = detkodebrg')->get();
+    }
 }

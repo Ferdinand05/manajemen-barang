@@ -40,10 +40,12 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
+
                     <input type="password" class="form-control <?= session()->has('errPassword') ? ' is-invalid' : '' ?>" placeholder="Password" id="password" name="password">
+
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
+                            <span id="passwordIcon" class="fas fa-lock"></span>
                         </div>
                     </div>
                     <div class="invalid-feedback">
@@ -69,6 +71,43 @@
         <script src="<?= base_url() ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <!-- AdminLTE App -->
         <script src="<?= base_url() ?>/dist/js/adminlte.min.js"></script>
+        <script>
+            $(document).ready(function() {
+
+
+                function cekType() {
+                    let inputType = $('#password').attr('type');
+                    if ($('#passwordIcon').hasClass('fa-eye-slash') && inputType == 'password') {
+                        $('#password').attr('type', 'text');
+                        $('#passwordIcon').removeClass('fa-eye');
+                    } else if ($('#passwordIcon').hasClass('fa-eye') && inputType == 'text') {
+                        $('#password').attr('type', 'password');
+                        $('#passwordIcon').removeClass('fa-eye-slash');
+                    } else {
+                        $('#passwordIcon').removeClass('fa-eye-slash');
+                        $('#password').attr('text', 'password');
+                    }
+                }
+
+
+
+                function iconClick() {
+                    $('#passwordIcon').removeClass('fa-lock');
+                    $('#passwordIcon').addClass('fa-eye');
+
+                    $('#passwordIcon').click(function(e) {
+                        $('#passwordIcon').toggleClass('fa-eye');
+                        $('#passwordIcon').toggleClass('fa-eye-slash');
+                        cekType();
+                    });
+                }
+
+                $('#password').click(function(e) {
+                    iconClick();
+                });
+
+            });
+        </script>
 </body>
 
 </html>

@@ -5,6 +5,7 @@ namespace Config;
 use App\Filters\FilterAdmin;
 use App\Filters\FilterGudang;
 use App\Filters\FilterKasir;
+use App\Filters\FilterOwner;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
@@ -26,7 +27,8 @@ class Filters extends BaseConfig
         'secureheaders' => SecureHeaders::class,
         'filterAdmin' => FilterAdmin::class,
         'filterKasir' => FilterKasir::class,
-        'filterGudang' => FilterGudang::class
+        'filterGudang' => FilterGudang::class,
+        'filterOwner' => FilterOwner::class
     ];
 
     /**
@@ -51,18 +53,25 @@ class Filters extends BaseConfig
                 // Kecuali ke ->
                 'except' => ['login/*', 'login', '/']
             ],
+            'filterOwner' => [
+                // Kecuali ke ->
+                'except' => ['login/*', 'login', '/']
+            ],
         ],
         // Setelah Login boleh Masuk
         'after' => [
             'filterAdmin' => [
                 // kecuali ke ->
-                'except' => ['main/*', 'barang/*', 'kategori/*', 'satuan/*', 'barang', 'kategori', 'satuan', 'barangmasuk', 'barangkeluar', 'barangmasuk/*', 'barangkeluar/*']
+                'except' => ['main/*', 'barang/*', 'kategori/*', 'satuan/*', 'barang', 'kategori', 'satuan', 'barangmasuk', 'barangkeluar', 'barangmasuk/*', 'barangkeluar/*', 'pelanggan/*']
             ],
             'filterGudang' => [
                 'except' => ['main/*', 'barang', 'barangmasuk/*', 'barangmasuk']
             ],
             'filterKasir' => [
                 'except' => ['main/*', 'barangkeluar/*', 'barangkeluar']
+            ],
+            'filterOwner' => [
+                'except' => ['*']
             ],
             'toolbar',
             // 'honeypot',

@@ -47,7 +47,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="<?= base_url() ?>" class="brand-link">
+            <a href="<?= base_url('main/index') ?>" class="brand-link">
                 <i class="fa fa-warehouse m-3 "></i>
                 <span class="brand-text font-weight-bold">Pergudangan</span>
             </a>
@@ -245,8 +245,7 @@
     </div>
     <!-- ./wrapper -->
 
-    <!-- jQuery -->
-    <script src="<?= base_url() ?>/plugins/jquery/jquery.min.js"></script>
+
     <!-- Bootstrap 4 -->
     <script src="<?= base_url() ?>/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->

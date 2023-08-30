@@ -43,7 +43,7 @@
     function listDataPelanggan() {
 
         $('#dataPelanggan').DataTable({
-
+            destroy: true,
             "processing": true,
             "serverSide": true,
             "order": [],

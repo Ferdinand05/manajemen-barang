@@ -9,6 +9,8 @@ use App\Models\ModelBarangMasuk;
 use App\Models\ModelTempBarangkeluar;
 use App\Models\ModelDataBarang;
 use App\Models\ModelDetailBarangkeluar;
+use App\Models\ModelPelanggan;
+use App\Models\ModelDataBarangkeluar;
 use CodeIgniter\Model;
 use Config\Services;
 
@@ -317,5 +319,88 @@ class BarangKeluar extends BaseController
 
             return $this->response->setJSON($json);
         }
+    }
+
+    public function cetakfaktur($faktur)
+    {
+        $modelPelanggan = new ModelPelanggan();
+
+        $dataFaktur = $this->barangkeluar->find($faktur);
+        $pelanggan = $modelPelanggan->find($dataFaktur['idplgn']);
+        $namapelanggan = ($dataFaktur['idplgn'] != 0) ? $pelanggan['nama'] : '-';
+        // dd($namapelanggan);
+
+        $detail_barangkeluar = $this->detail_barangkeluar->tampilDataFaktur($faktur);
+        // dd($detail_barangkeluar->getResultArray());
+        if ($dataFaktur != null) {
+            $data = [
+                'faktur' => $faktur,
+                'tglfaktur' => $dataFaktur['tglfaktur'],
+                'nama' => $namapelanggan,
+                'detailbarang' => $detail_barangkeluar,
+                'jumlahuang' => $dataFaktur['jumlahuang'],
+                'totalharga' => $dataFaktur['totalharga']
+            ];
+        } else {
+            echo "faktur tidak ada!";
+        }
+
+        return view('barangkeluar/cetakfaktur', $data);
+    }
+
+
+
+    // dataTable serverside
+
+    public function listData()
+    {
+        $tglawal = $this->request->getPost('tglawal');
+        $tglakhir = $this->request->getPost('tglakhir');
+        $request = Services::request();
+        $datamodel = new modelDataBarangkeluar($request);
+        if ($request->getPost()) {
+            $lists = $datamodel->get_datatables($tglawal, $tglakhir);
+            $data = [];
+            $no = $request->getPost("start");
+            foreach ($lists as $list) {
+
+
+                $no++;
+                $row = [];
+                $btnCetak = '<button type="button" class="btn btn-primary btn-sm" onclick="cetakFaktur(\'' . $list->faktur . '\')"><i class="fa fa-print"></i></button>';
+                $btnHapus = '<button type="button" class="btn btn-danger btn-sm" onclick="hapusFaktur(\'' . $list->faktur . '\')"><i class="fa fa-trash-alt"></i></button>';
+                $row[] = $no;
+                $row[] = $list->faktur;
+                $row[] = $list->tglfaktur;
+                $row[] = $list->nama;
+                $row[] = $list->totalharga;
+                $row[] = $btnCetak . " " . $btnHapus;
+                $data[] = $row;
+            }
+            $output = [
+                "draw" => $request->getPost('draw'),
+                "recordsTotal" => $datamodel->count_all($tglawal, $tglakhir),
+                "recordsFiltered" => $datamodel->count_filtered($tglawal, $tglakhir),
+                "data" => $data
+            ];
+            echo json_encode($output);
+        }
+    }
+
+
+
+    public function hapusTransaksi()
+    {
+        if ($this->request->isAJAX()) {
+
+            $faktur = $this->request->getPost('faktur');
+
+            $this->barangkeluar->delete($faktur);
+            $this->detail_barangkeluar->where('detfaktur', $faktur)->delete();
+            $json = [
+                'sukses' => 'Data Transaksi Berhasil Dihapus!'
+            ];
+        }
+        return $this->response->setJSON($json);
     }
 }

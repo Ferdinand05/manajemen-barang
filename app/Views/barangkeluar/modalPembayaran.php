@@ -141,7 +141,7 @@
                             confirmButtonText: 'Ya, Cetak Faktur'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                let windowCetak = window.open(response.cetakfaktur, "Cetak Faktur Barang Keluar", "width=250,height=500");
+                                let windowCetak = window.open(response.cetakfaktur, "Cetak Faktur Barang Keluar", "width=300,height=500");
                                 windowCetak.focus();
                                 window.location.reload();
                             } else {
