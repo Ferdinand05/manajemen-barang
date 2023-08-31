@@ -27,4 +27,9 @@ class ModelBarangMasuk extends Model
 
         ]);
     }
+
+    public function periodeLaporan($tglawal, $tglakhir)
+    {
+        return $this->builder('barangmasuk')->where('tglfaktur >=', $tglawal)->where('tglfaktur <=', $tglakhir)->get();
+    }
 }

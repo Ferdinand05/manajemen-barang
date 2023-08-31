@@ -72,6 +72,7 @@
                 <td colspan="2"><b> Barang -></b></td>
             </tr>
             <?php
+            $totalharga = 0;
             foreach ($detailbarang->getResultArray() as $row) :
                 $totalharga += $row['detsubtotal'];
             ?>

@@ -62,7 +62,7 @@ class Filters extends BaseConfig
         'after' => [
             'filterAdmin' => [
                 // kecuali ke ->
-                'except' => ['main/*', 'barang/*', 'kategori/*', 'satuan/*', 'barang', 'kategori', 'satuan', 'barangmasuk', 'barangkeluar', 'barangmasuk/*', 'barangkeluar/*', 'pelanggan/*']
+                'except' => ['main/*', 'barang/*', 'kategori/*', 'satuan/*', 'barang', 'kategori', 'satuan', 'barangmasuk', 'barangkeluar', 'barangmasuk/*', 'barangkeluar/*', 'pelanggan/*', 'laporan', 'laporan/*']
             ],
             'filterGudang' => [
                 'except' => ['main/*', 'barang', 'barangmasuk/*', 'barangmasuk']

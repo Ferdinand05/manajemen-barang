@@ -339,7 +339,7 @@ class BarangKeluar extends BaseController
                 'nama' => $namapelanggan,
                 'detailbarang' => $detail_barangkeluar,
                 'jumlahuang' => $dataFaktur['jumlahuang'],
-                'totalharga' => $dataFaktur['totalharga']
+
             ];
         } else {
             echo "faktur tidak ada!";
@@ -369,12 +369,13 @@ class BarangKeluar extends BaseController
                 $row = [];
                 $btnCetak = '<button type="button" class="btn btn-primary btn-sm" onclick="cetakFaktur(\'' . $list->faktur . '\')"><i class="fa fa-print"></i></button>';
                 $btnHapus = '<button type="button" class="btn btn-danger btn-sm" onclick="hapusFaktur(\'' . $list->faktur . '\')"><i class="fa fa-trash-alt"></i></button>';
+                $btnEdit = '<button type="button" class="btn btn-success btn-sm" onclick="editFaktur(\'' . $list->faktur . '\')"><i class="fa fa-edit"></i></button>';
                 $row[] = $no;
                 $row[] = $list->faktur;
                 $row[] = $list->tglfaktur;
                 $row[] = $list->nama;
                 $row[] = $list->totalharga;
-                $row[] = $btnCetak . " " . $btnHapus;
+                $row[] = $btnCetak . " " . $btnHapus . " " . $btnEdit;
                 $data[] = $row;
             }
             $output = [
@@ -402,5 +403,160 @@ class BarangKeluar extends BaseController
             ];
         }
         return $this->response->setJSON($json);
+    }
+
+    public function edit($faktur)
+    {
+        $btnInput = '    <a href="/barangkeluar/data" class="btn btn-danger mb-2">Kembali <i class="fa fa-backward"></i></a>';
+
+        $dataBarangKeluar = $this->barangkeluar->find($faktur);
+        $modelPelanggan = new ModelPelanggan();
+        $dataPelanggan = $modelPelanggan->find($dataBarangKeluar['idplgn']);
+        $namapelanggan = $dataPelanggan['nama'];
+        $data = [
+            'title' => 'FORM EDIT TRANSAKSI BARANG KELUAR',
+            'subtitle' => $btnInput,
+            'content' => '',
+            'faktur' => $dataBarangKeluar['faktur'],
+            'tglfaktur' => $dataBarangKeluar['tglfaktur'],
+            'namapelanggan' => $namapelanggan
+
+        ];
+        return view('barangkeluar/formedit', $data);
+    }
+
+
+    public function getTotalHarga()
+    {
+        if ($this->request->isAJAX()) {
+
+            $faktur = $this->request->getPost('faktur');
+
+            $totalHarga = $this->detail_barangkeluar->getTotalHarga($faktur);
+
+            $json = [
+                'totalharga' => number_format($totalHarga, 0, ',', '.')
+            ];
+
+            return $this->response->setJSON($json);
+        } else {
+            exit('Tidak Bisa Diakses');
+        }
+    }
+
+    public function viewDataDetail()
+    {
+        if ($this->request->isAJAX()) {
+
+            $nofaktur = $this->request->getPost('faktur');
+
+            $dataTemp = $this->detail_barangkeluar->tampilDataFaktur($nofaktur);
+
+            $data = [
+                'tampilData' => $dataTemp
+            ];
+
+            $json = [
+                'data' => view('barangkeluar/dataDetail', $data)
+            ];
+        }
+        echo json_encode($json);
+    }
+
+    public function hapusItemDetail()
+    {
+        if ($this->request->isAJAX()) {
+            $id = $this->request->getPost('id');
+            $tableDetailBarangkeluar = $this->detail_barangkeluar->find($id);
+            $nofaktur = $tableDetailBarangkeluar['detfaktur'];
+
+            // Hapus Item Detail Barang keluar
+            $this->detail_barangkeluar->delete($id);
+
+            $totalHarga = $this->detail_barangkeluar->getTotalHarga($nofaktur);
+
+            // update total haraga
+            $this->barangkeluar->update($nofaktur, [
+                'totalharga' => $totalHarga
+            ]);
+
+            $json = [
+                'sukses' => 'Item Berhasil Dihapus'
+            ];
+        }
+
+        return $this->response->setJSON($json);
+    }
+
+    public function editItem()
+    {
+        if ($this->request->isAJAX()) {
+            $iddetail = $this->request->getPost('iddetail');
+            $jumlah = $this->request->getPost('jumlah');
+
+            $tableDetailBarangkeluar = $this->detail_barangkeluar->find($iddetail);
+            $faktur = $tableDetailBarangkeluar['detfaktur'];
+
+            // update jumlah dan subtotal, table detail BK
+            $this->detail_barangkeluar->update($iddetail, [
+                'detjumlah' => $jumlah,
+                'detsubtotal' => $jumlah * intval($tableDetailBarangkeluar['dethargajual'])
+            ]);
+
+            $totalHarga = $this->detail_barangkeluar->getTotalHarga($faktur);
+            // update totalharga
+            $this->barangkeluar->update($faktur, [
+                'totalharga' => $totalHarga
+            ]);
+
+            $json = [
+                'sukses' => 'Item Berhasil Diubah!'
+            ];
+        }
+
+        return $this->response->setJSON($json);
+    }
+
+    public function simpanItemDetail()
+    {
+        if ($this->request->isAJAX()) {
+
+            $kodebarang = $this->request->getPost('kodebarang');
+            $namabarang = $this->request->getPost('namabarang');
+            $hargajual = $this->request->getPost('hargajual');
+            $nofaktur = $this->request->getPost('nofaktur');
+            $jumlah = $this->request->getPost('jumlah');
+
+            $modelBarang = new ModelBarang();
+            $cekStokBarang = $modelBarang->find($kodebarang);
+            $stokBarang = $cekStokBarang['stok_brg'];
+
+            if ($jumlah > $stokBarang) {
+
+                $json = [
+                    'error' => 'Stok Barang Tidak Mencukupi!'
+                ];
+            } else {
+
+                $this->detail_barangkeluar->insert([
+                    'detfaktur' => $nofaktur,
+                    'detkodebrg' => $kodebarang,
+                    'dethargajual' => $hargajual,
+                    'detjumlah' => $jumlah,
+                    'detsubtotal' => intval($hargajual) * intval($jumlah)
+                ]);
+
+                $totalHarga = $this->detail_barangkeluar->getTotalHarga($nofaktur);
+                // update totalharga
+                $this->barangkeluar->update($nofaktur, [
+                    'totalharga' => $totalHarga
+                ]);
+
+                $json = [
+                    'sukses' => 'Item Berhasil Ditambahkan!'
+                ];
+            }
+        }
+        echo json_encode($json);
     }
 }

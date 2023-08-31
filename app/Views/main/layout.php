@@ -134,6 +134,12 @@
                                     <p class="text">Barang Keluar</p>
                                 </a>
                             </li>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('laporan'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-file text-primary"></i>
+                                    <p class="text">Laporan</p>
+                                </a>
+                            </li>
                         <?php endif; ?>
 
                         <!-- controller/view Admin -->
@@ -168,6 +174,12 @@
                                 <a href="<?= base_url('BarangKeluar/data'); ?>" class="nav-link">
                                     <i class="nav-icon fa fa-truck-loading text-success"></i>
                                     <p class="text">Barang Keluar</p>
+                                </a>
+                            </li>
+                            <li class="nav-item user-panel">
+                                <a href="<?= base_url('laporan'); ?>" class="nav-link">
+                                    <i class="nav-icon fa fa-file text-success"></i>
+                                    <p class="text">Laporan</p>
                                 </a>
                             </li>
                         <?php endif; ?>

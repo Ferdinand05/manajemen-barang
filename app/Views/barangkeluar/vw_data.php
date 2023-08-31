@@ -111,6 +111,12 @@
         })
     }
 
+    function editFaktur(faktur) {
+
+        window.location.href = ('/barangkeluar/edit/' + faktur);
+
+    }
+
 
     $(document).ready(function() {
 
@@ -121,7 +127,6 @@
         $('#btnFilter').click(function(e) {
             listDataBarangkeluar();
         });
-
 
 
 
