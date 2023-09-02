@@ -38,8 +38,8 @@ class Laporan extends BaseController
         $tglawal = $this->request->getVar('tglAwal');
         $tglakhir = $this->request->getVar('tglAkhir');
 
-        $tableBarangkeluar = new ModelBarangMasuk();
-        $dataLaporan = $tableBarangkeluar->periodeLaporan($tglawal, $tglakhir);
+        $tableBarangmasuk = new ModelBarangMasuk();
+        $dataLaporan = $tableBarangmasuk->periodeLaporan($tglawal, $tglakhir);
         $data = [
             'dataLaporan' => $dataLaporan->getResultArray(),
             'tglawal' => $tglawal,
@@ -47,5 +47,70 @@ class Laporan extends BaseController
         ];
 
         return view('laporan/laporanBarangmasuk', $data);
+    }
+
+
+    public function showGrafik()
+    {
+
+        $bulan = $this->request->getPost('bulan');
+        $db = \Config\Database::connect();
+        $sql = "SELECT tglfaktur as tgl,totalharga FROM barangmasuk WHERE DATE_FORMAT(tglfaktur,'%Y-%m') = '$bulan' ORDER BY tglfaktur ASC";
+        $grafik = $db->query($sql)->getResult('array');
+
+        $data = [
+            'grafik' => $grafik
+        ];
+        $json = [
+            'data' => view('laporan/grafikBarangmasuk', $data)
+        ];
+
+        echo json_encode($json);
+    }
+
+
+    public function cetak_barang_keluar()
+    {
+
+        $btn = "<a href='/laporan' class='btn btn-danger'><i class='fa fa-backward'></i> Kembali</a>";
+        $data = [
+            'title' => 'Laporan Barang Keluar',
+            'subtitle' => $btn,
+            'content' => ''
+        ];
+        return view('laporan/barangkeluar', $data);
+    }
+
+    public function cetakBarangkeluarPeriode()
+    {
+        $tglawal = $this->request->getVar('tglAwalBarangkeluar');
+        $tglakhir = $this->request->getVar('tglAkhirBarangkeluar');
+
+        $tableBarangkeluar = new ModelBarangkeluar();
+        $dataLaporan = $tableBarangkeluar->periodeLaporan2($tglawal, $tglakhir);
+        $data = [
+            'dataLaporan' => $dataLaporan->getResultArray(),
+            'tglawal' => $tglawal,
+            'tglakhir' => $tglakhir
+        ];
+
+        return view('laporan/laporanBarangkeluar', $data);
+    }
+
+    public function showGrafikBarangkeluar()
+    {
+        $bulan = $this->request->getPost('bulan');
+        $db = \Config\Database::connect();
+        $sql = "SELECT tglfaktur as tgl,totalharga FROM barangkeluar WHERE DATE_FORMAT(tglfaktur,'%Y-%m') = '$bulan' ORDER BY tglfaktur ASC";
+        $grafik = $db->query($sql)->getResult('array');
+
+        $data = [
+            'grafik' => $grafik
+        ];
+        $json = [
+            'data' => view('laporan/grafikBarangkeluar', $data)
+        ];
+
+        echo json_encode($json);
     }
 }

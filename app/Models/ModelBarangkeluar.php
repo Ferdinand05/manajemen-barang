@@ -18,4 +18,9 @@ class ModelBarangkeluar extends Model
 
         return $this->builder('barangkeluar')->selectMax('faktur', 'nofaktur')->where('tglfaktur', $tglSekarang)->get();
     }
+
+    public function periodeLaporan2($tglawal, $tglakhir)
+    {
+        return $this->builder('barangkeluar')->where('tglfaktur >=', $tglawal)->where('tglfaktur <=', $tglakhir)->get();
+    }
 }

@@ -9,13 +9,13 @@
             <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-header">Pilih Periode</div>
                 <div class="card-body bg-white">
-                    <?= form_open('laporan/cetakBarangmasukPeriode', ['target' => '_blank']); ?>
+                    <?= form_open('laporan/cetakBarangkeluarPeriode', ['target' => '_blank']); ?>
                     <div class="form-group mb-2">
                         <label for="tglawal">Tanggal Awal</label>
-                        <input type="date" class="form-control mb-2" required id="tglAwal" name="tglAwal">
+                        <input type="date" class="form-control mb-2" required id="tglAwal" name="tglAwalBarangkeluar">
 
                         <label for="tglakhir">Tanggal Akhir</label>
-                        <input type="date" class="form-control mb-2" required id="tglAkhir" name="tglAkhir">
+                        <input type="date" class="form-control mb-2" required id="tglAkhir" name="tglAkhirBarangkeluar">
 
                         <button type="submit" class="btn btn-success btn-block mb-2" id="btnPeriode">
                             <i class="fa fa-print"></i> Cetak Laporan
@@ -38,7 +38,7 @@
         <div class="col-md-8">
 
             <div class="card bg-light mb-3">
-                <div class="card-header">Grafik Barang Masuk</div>
+                <div class="card-header">Grafik Barang Keluar</div>
                 <div class="card-body viewGrafik">
 
                 </div>
@@ -49,10 +49,10 @@
 </div>
 
 <script>
-    function showGrafik(bulan = "2023-08") {
+    function showGrafikBarangkeluar(bulan = "2023-08") {
         $.ajax({
             type: "post",
-            url: "/laporan/showGrafik",
+            url: "/laporan/showGrafikBarangkeluar",
             data: {
                 bulan: bulan
             },
@@ -74,15 +74,15 @@
     }
 
     $(document).ready(function() {
-        showGrafik();
-        "", "aa"
+        showGrafikBarangkeluar();
+
 
         $('#bulan').change(function(e) {
             e.preventDefault();
             let bulan = $('#bulan').val();
             let tahunBulan = bulan.substr(0, 7);
 
-            showGrafik(tahunBulan);
+            showGrafikBarangkeluar(tahunBulan);
         });
 
 
